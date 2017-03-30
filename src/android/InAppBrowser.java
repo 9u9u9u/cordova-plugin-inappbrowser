@@ -51,6 +51,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.net.Uri; 
+import android.webkit.DownloadListener;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.Config;
@@ -847,6 +849,18 @@ public class InAppBrowser extends CordovaPlugin {
                 if(openWindowHidden) {
                     dialog.hide();
                 }
+		    
+                inAppWebView.setDownloadListener(new DownloadListener() {
+                    public void onDownloadStart(String url, String userAgent,
+                            String contentDisposition, String mimetype,
+                            long contentLength) {
+                      Intent i = new Intent(Intent.ACTION_VIEW);
+                      i.setData(Uri.parse(url));
+                      cordova.getActivity().startActivity(i);
+                    }
+                });
+		    
+		    
             }
         };
         this.cordova.getActivity().runOnUiThread(runnable);
